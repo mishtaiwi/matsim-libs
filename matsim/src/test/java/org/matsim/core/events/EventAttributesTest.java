@@ -217,7 +217,7 @@ public class EventAttributesTest {
 
 		//compare
 		assertTrue(EventsFileComparator.compare(inputFile, outputFile) == EventsFileComparator.Result.FILES_ARE_EQUAL);
-		//TODO: The above one is passing. The below one failing...
+		//TODO: The above one is passing. The below one failing... --> Erklärbar, weil EventsComparartor die Attribute nicht kennt und daher nicht sieht und daher ist es identisch :)
 		MatsimTestUtils.compareFilesLineByLine(inputFile, outputFile);
 	}
 
