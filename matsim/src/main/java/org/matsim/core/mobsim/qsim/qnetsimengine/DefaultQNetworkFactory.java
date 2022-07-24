@@ -62,13 +62,13 @@ import org.matsim.vis.snapshotwriters.SnapshotLinkWidthCalculator;
  * @see ConfigurableQNetworkFactory
  */
 public final class DefaultQNetworkFactory implements QNetworkFactory {
-	private EventsProcessor events ;
+	private EventsManager events ;
 	private Scenario scenario ;
 	// (vis needs network and may need population attributes and config; in consequence, makes sense to have scenario here. kai, apr'16)
 	private NetsimEngineContext context;
 	private NetsimInternalInterface netsimEngine ;
 	@Inject
-	DefaultQNetworkFactory( EventsProcessor events, Scenario scenario ) {
+	DefaultQNetworkFactory( EventsManager events, Scenario scenario ) {
 		this.events = events;
 		this.scenario = scenario;
 	}
