@@ -174,13 +174,13 @@ public class ActivityReplanningMapTest extends MatsimTestCase {
 				currentActivity.setEndTime(e.getSimulationTime() + 60);
 				WithinDayAgentUtils.resetCaches(agent);
 				this.withinDayEngine.getActivityRescheduler().rescheduleActivityEnd(agent);
-				((QSim) e.getQueueSimulation()).getEventsManager().processEvent(new ReplanningEvent(e.getSimulationTime(), agent.getId(), "ActivityRescheduler"));
+				((QSim) e.getQueueSimulation()).getEventsProcessor().processEvent(new ReplanningEvent(e.getSimulationTime(), agent.getId(), "ActivityRescheduler") );
 				
 				// reschedule a second time to check what happens if the agent is replanned multiple times in one time step
 				currentActivity.setEndTime(e.getSimulationTime() + 120);
 				WithinDayAgentUtils.resetCaches(agent);
 				this.withinDayEngine.getActivityRescheduler().rescheduleActivityEnd(agent);
-				((QSim) e.getQueueSimulation()).getEventsManager().processEvent(new ReplanningEvent(e.getSimulationTime(), agent.getId(), "ActivityRescheduler"));
+				((QSim) e.getQueueSimulation()).getEventsProcessor().processEvent(new ReplanningEvent(e.getSimulationTime(), agent.getId(), "ActivityRescheduler") );
 			}
 			
 			if (e.getSimulationTime() == t5) {

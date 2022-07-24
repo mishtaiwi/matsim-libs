@@ -27,7 +27,7 @@ import org.matsim.api.core.v01.events.ActivityStartEvent;
 import org.matsim.api.core.v01.events.PersonArrivalEvent;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimVehicle;
 import org.matsim.core.mobsim.qsim.pt.MobsimDriverPassengerAgent;
@@ -47,7 +47,7 @@ public final class DynAgent implements MobsimDriverPassengerAgent {
 
 	private MobsimVehicle veh;
 
-	private final EventsManager events;
+	private final EventsProcessor events;
 
 	private MobsimAgent.State state;
 
@@ -62,7 +62,7 @@ public final class DynAgent implements MobsimDriverPassengerAgent {
 
 	// =====
 
-	public DynAgent(Id<Person> id, Id<Link> startLinkId, EventsManager events, DynAgentLogic agentLogic) {
+	public DynAgent( Id<Person> id, Id<Link> startLinkId, EventsProcessor events, DynAgentLogic agentLogic ) {
 		this.id = id;
 		this.currentLinkId = startLinkId;
 		this.agentLogic = agentLogic;

@@ -56,7 +56,7 @@ public class RandomDynAgentSource implements AgentSource {
 
 			Id<Person> id = Id.createPersonId(i);
 			Id<Link> startLinkId = RandomDynAgentLogic.chooseRandomElement(network.getLinks().keySet());
-			DynAgent agent = new DynAgent(id, startLinkId, qSim.getEventsManager(), agentLogic);
+			DynAgent agent = new DynAgent(id, startLinkId, qSim.getEventsProcessor(), agentLogic);
 
 //			qSim.createAndParkVehicleOnLink(qSimVehicleFactory.createVehicle(Id.create(id, Vehicle.class),
 //					VehicleUtils.getDefaultVehicleType()), startLinkId);

@@ -89,7 +89,7 @@ public class SBBTransitQSimEngine extends TransitQSimEngine /*implements Departu
         this.config = ConfigUtils.addOrGetModule(qSim.getScenario().getConfig(), SBBTransitConfigGroup.GROUP_NAME, SBBTransitConfigGroup.class);
         this.ptConfig = qSim.getScenario().getConfig().transit();
         this.schedule = qSim.getScenario().getTransitSchedule();
-        this.agentTracker = new TransitStopAgentTracker(qSim.getEventsManager());
+        this.agentTracker = new TransitStopAgentTracker(qSim.getEventsProcessor());
         if (this.config.getCreateLinkEventsInterval() > 0) {
             this.linkEventQueue = new PriorityQueue<>();
             this.linksCache = new ConcurrentHashMap<>();
@@ -156,8 +156,8 @@ public class SBBTransitQSimEngine extends TransitQSimEngine /*implements Departu
             LinkEvent linkEvent = this.linkEventQueue.peek();
             while (linkEvent != null && linkEvent.time <= time) {
                 this.linkEventQueue.poll();
-                this.qSim.getEventsManager().processEvent(new LinkLeaveEvent(time, linkEvent.vehicleId, linkEvent.fromLinkId));
-                this.qSim.getEventsManager().processEvent(new LinkEnterEvent(time, linkEvent.vehicleId, linkEvent.toLinkId));
+                this.qSim.getEventsProcessor().processEvent(new LinkLeaveEvent(time, linkEvent.vehicleId, linkEvent.fromLinkId) );
+                this.qSim.getEventsProcessor().processEvent(new LinkEnterEvent(time, linkEvent.vehicleId, linkEvent.toLinkId) );
                 linkEvent = this.linkEventQueue.peek();
             }
         }
@@ -176,7 +176,7 @@ public class SBBTransitQSimEngine extends TransitQSimEngine /*implements Departu
         for (Map.Entry<Id<TransitStopFacility>, List<PTPassengerAgent>> agentsAtStop : this.agentTracker.getAgentsAtStop().entrySet()) {
             TransitStopFacility stop = this.schedule.getFacilities().get(agentsAtStop.getKey());
             for (PTPassengerAgent agent : agentsAtStop.getValue()) {
-                this.qSim.getEventsManager().processEvent(new PersonStuckEvent(now, agent.getId(), stop.getLinkId(), agent.getMode()));
+                this.qSim.getEventsProcessor().processEvent(new PersonStuckEvent(now, agent.getId(), stop.getLinkId(), agent.getMode()) );
                 this.qSim.getAgentCounter().decLiving();
                 this.qSim.getAgentCounter().incLost();
             }
@@ -187,7 +187,7 @@ public class SBBTransitQSimEngine extends TransitQSimEngine /*implements Departu
         while ((event = this.eventQueue.poll()) != null) {
             Id<Link> nextStopLinkId = event.context.nextStop.getStopFacility().getLinkId();
             for (PassengerAgent agent : event.context.driver.getVehicle().getPassengers()) {
-                this.qSim.getEventsManager().processEvent(new PersonStuckEvent(now, agent.getId(), nextStopLinkId, agent.getMode()));
+                this.qSim.getEventsProcessor().processEvent(new PersonStuckEvent(now, agent.getId(), nextStopLinkId, agent.getMode()) );
                 this.qSim.getAgentCounter().decLiving();
                 this.qSim.getAgentCounter().incLost();
             }
@@ -281,11 +281,11 @@ public class SBBTransitQSimEngine extends TransitQSimEngine /*implements Departu
         TransitRoute trRoute = driver.getTransitRoute();
         List<Link[]> links = this.createLinkEvents ? this.linksCache.computeIfAbsent(trRoute, r -> getLinksPerStopAlongRoute(r, this.qSim.getScenario().getNetwork())) : null;
         TransitContext context = new TransitContext(driver, links);
-        this.qSim.getEventsManager().processEvent(new PersonEntersVehicleEvent(now, driver.getId(), driver.getVehicle().getId()));
+        this.qSim.getEventsProcessor().processEvent(new PersonEntersVehicleEvent(now, driver.getId(), driver.getVehicle().getId()) );
         if (this.createLinkEvents) {
             Id<Link> linkId = driver.getCurrentLinkId();
             String mode = driver.getMode();
-            this.qSim.getEventsManager().processEvent(new VehicleEntersTrafficEvent(now, driver.getId(), linkId, driver.getVehicle().getId(), mode, 1.0));
+            this.qSim.getEventsProcessor().processEvent(new VehicleEntersTrafficEvent(now, driver.getId(), linkId, driver.getVehicle().getId(), mode, 1.0) );
         }
         TransitEvent event = new TransitEvent(now, TransitEventType.ArrivalAtStop, context);
         this.eventQueue.add(event);
@@ -349,9 +349,9 @@ public class SBBTransitQSimEngine extends TransitQSimEngine /*implements Departu
             if (this.createLinkEvents) {
                 Id<Link> linkId = driver.getDestinationLinkId();
                 String mode = driver.getMode();
-                this.qSim.getEventsManager().processEvent(new VehicleLeavesTrafficEvent(event.time, driver.getId(), linkId, driver.getVehicle().getId(), mode, 1.0));
+                this.qSim.getEventsProcessor().processEvent(new VehicleLeavesTrafficEvent(event.time, driver.getId(), linkId, driver.getVehicle().getId(), mode, 1.0) );
             }
-            this.qSim.getEventsManager().processEvent(new PersonLeavesVehicleEvent(event.time, driver.getId(), driver.getVehicle().getId()));
+            this.qSim.getEventsProcessor().processEvent(new PersonLeavesVehicleEvent(event.time, driver.getId(), driver.getVehicle().getId()) );
             driver.endLegAndComputeNextState(event.time);
             this.internalInterface.arrangeNextAgentState(driver);
         }
@@ -379,8 +379,8 @@ public class SBBTransitQSimEngine extends TransitQSimEngine /*implements Departu
                     double time = depTime + travelledLength * secondsPerMeter;
                     if (travelTime == 0) {
                         // create the events right now, so they stay in correct order before next arrival
-                        this.qSim.getEventsManager().processEvent(new LinkLeaveEvent(time, vehicle.getId(), fromLink.getId()));
-                        this.qSim.getEventsManager().processEvent(new LinkEnterEvent(time, vehicle.getId(), toLink.getId()));
+                        this.qSim.getEventsProcessor().processEvent(new LinkLeaveEvent(time, vehicle.getId(), fromLink.getId()) );
+                        this.qSim.getEventsProcessor().processEvent(new LinkEnterEvent(time, vehicle.getId(), toLink.getId()) );
                     } else {
                         this.linkEventQueue.add(new LinkEvent(time, fromLink.getId(), toLink.getId(), vehicle.getId()));
                     }

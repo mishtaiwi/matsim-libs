@@ -38,6 +38,7 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.gbl.Gbl;
 import org.matsim.core.mobsim.framework.HasPerson;
 import org.matsim.core.mobsim.framework.MobsimAgent;
@@ -67,7 +68,7 @@ public final class BasicPlanAgentImpl implements MobsimAgent, PlanAgent, HasPers
 	private Plan plan;
 	private boolean firstTimeToGetModifiablePlan = true;
 	private final Scenario scenario;
-	private final EventsManager events;
+	private final EventsProcessor events;
 	private final MobsimTimer simTimer;
 	private MobsimVehicle vehicle ;
 	private double activityEndTime;
@@ -82,7 +83,7 @@ public final class BasicPlanAgentImpl implements MobsimAgent, PlanAgent, HasPers
 	 */
 	private int currentLinkIndex = 0;
 
-	public BasicPlanAgentImpl(Plan plan2, Scenario scenario, EventsManager events, MobsimTimer simTimer, TimeInterpretation timeInterpretation) {
+	public BasicPlanAgentImpl(Plan plan2, Scenario scenario, EventsProcessor events, MobsimTimer simTimer, TimeInterpretation timeInterpretation) {
 
 		this.plan = PopulationUtils.unmodifiablePlan(plan2) ;
 		// yy MZ suggests, and I agree, to always give the agent a full plan, and consume that plan as the agent goes.  kai, nov'14
@@ -329,7 +330,7 @@ public final class BasicPlanAgentImpl implements MobsimAgent, PlanAgent, HasPers
 		return scenario;
 	}
 	
-	public final EventsManager getEvents() {
+	public final EventsProcessor getEvents() {
 		return events;
 	}
 	

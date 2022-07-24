@@ -42,7 +42,7 @@ import org.matsim.api.core.v01.events.VehicleLeavesTrafficEvent;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Node;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.gbl.Gbl;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.framework.MobsimAgent.State;
@@ -368,7 +368,7 @@ abstract class AbstractQLink implements QLinkI {
 		MobsimDriverAgent driver = vehicle.getDriver();
 		if (driver == null) throw new RuntimeException("Vehicle cannot depart without a driver!");
 
-		EventsManager eventsManager = context.getEventsManager();
+		EventsProcessor eventsManager = context.getEventsManager();
 		eventsManager.processEvent(new PersonEntersVehicleEvent(now, driver.getId(), vehicle.getId()));
 		this.addDepartingVehicle(vehicle);
 	}
@@ -398,7 +398,7 @@ abstract class AbstractQLink implements QLinkI {
 			}
 
 			((PassengerAgent) passenger).setVehicle(vehicle);
-			EventsManager eventsManager = context.getEventsManager();
+			EventsProcessor eventsManager = context.getEventsManager();
 			eventsManager.processEvent(new PersonEntersVehicleEvent(now, passenger.getId(), vehicle.getId()));
 			// TODO: allow setting passenger's currentLinkId to null
 

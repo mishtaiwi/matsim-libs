@@ -581,7 +581,7 @@ public final class QLinkTest extends MatsimTestCase {
 				.build(scenario, eventsManager);
 
 		EventsCollector collector = new EventsCollector();
-		sim.getEventsManager().addHandler(collector);
+		sim.getEventsManager().addHandler(collector );
 
 		sim.run();
 

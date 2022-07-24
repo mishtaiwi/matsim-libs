@@ -26,6 +26,7 @@ import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Node;
 import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.mobsim.framework.MobsimTimer;
 import org.matsim.core.mobsim.qsim.interfaces.AgentCounter;
@@ -61,13 +62,13 @@ import org.matsim.vis.snapshotwriters.SnapshotLinkWidthCalculator;
  * @see ConfigurableQNetworkFactory
  */
 public final class DefaultQNetworkFactory implements QNetworkFactory {
-	private EventsManager events ;
+	private EventsProcessor events ;
 	private Scenario scenario ;
 	// (vis needs network and may need population attributes and config; in consequence, makes sense to have scenario here. kai, apr'16)
 	private NetsimEngineContext context;
 	private NetsimInternalInterface netsimEngine ;
 	@Inject
-	DefaultQNetworkFactory( EventsManager events, Scenario scenario ) {
+	DefaultQNetworkFactory( EventsProcessor events, Scenario scenario ) {
 		this.events = events;
 		this.scenario = scenario;
 	}

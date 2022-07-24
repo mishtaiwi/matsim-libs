@@ -28,7 +28,7 @@ import org.matsim.contrib.dynagent.DynActivity;
 import org.matsim.contrib.dynagent.DynAgent;
 import org.matsim.contrib.dynagent.DynAgentLogic;
 import org.matsim.contrib.dynagent.IdleDynActivity;
-import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 
 /**
  * @author michalm
@@ -45,11 +45,11 @@ public final class VrpAgentLogic implements DynAgentLogic {
 	private final DynActionCreator dynActionCreator;
 	private final DvrpVehicle vehicle;
 	private final String dvrpMode;
-	private final EventsManager eventsManager;
+	private final EventsProcessor eventsManager;
 	private DynAgent agent;
 
-	public VrpAgentLogic(VrpOptimizer optimizer, DynActionCreator dynActionCreator, DvrpVehicle vehicle,
-			String dvrpMode, EventsManager eventsManager) {
+	public VrpAgentLogic( VrpOptimizer optimizer, DynActionCreator dynActionCreator, DvrpVehicle vehicle,
+			      String dvrpMode, EventsProcessor eventsManager ) {
 		this.optimizer = optimizer;
 		this.dynActionCreator = dynActionCreator;
 		this.vehicle = vehicle;

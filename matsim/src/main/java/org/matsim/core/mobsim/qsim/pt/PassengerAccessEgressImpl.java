@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.events.PersonEntersVehicleEvent;
@@ -32,12 +31,11 @@ import org.matsim.api.core.v01.events.PersonLeavesVehicleEvent;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.api.experimental.events.BoardingDeniedEvent;
-import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.framework.MobsimDriverAgent;
 import org.matsim.core.mobsim.framework.PassengerAgent;
 import org.matsim.core.mobsim.qsim.InternalInterface;
-import org.matsim.core.mobsim.qsim.agents.PersonDriverAgentImpl;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimVehicle;
 import org.matsim.pt.transitSchedule.api.TransitLine;
 import org.matsim.pt.transitSchedule.api.TransitRoute;
@@ -57,16 +55,14 @@ class PassengerAccessEgressImpl implements PassengerAccessEgress {
 	private final TransitStopAgentTracker agentTracker;
 	private final boolean isGeneratingDeniedBoardingEvents ;
 	private Set<PTPassengerAgent> agentsDeniedToBoard = null;
-	private Scenario scenario;
-	private EventsManager eventsManager;
+	private final EventsProcessor eventsManager;
 	
-	PassengerAccessEgressImpl(InternalInterface internalInterface, TransitStopAgentTracker agentTracker, Scenario scenario, EventsManager eventsManager) {
+	PassengerAccessEgressImpl(InternalInterface internalInterface, TransitStopAgentTracker agentTracker, Scenario scenario, EventsProcessor eventsProcessor ) {
 		this.internalInterface = internalInterface;
 		this.agentTracker = agentTracker;
-		this.scenario = scenario;
-		this.eventsManager = eventsManager;
+		this.eventsManager = eventsProcessor;
 		this.isGeneratingDeniedBoardingEvents =
-				this.scenario.getConfig().vspExperimental().isGeneratingBoardingDeniedEvents() ;
+				scenario.getConfig().vspExperimental().isGeneratingBoardingDeniedEvents() ;
 		if (this.isGeneratingDeniedBoardingEvents){
 			this.agentsDeniedToBoard = new HashSet<>();
 		}

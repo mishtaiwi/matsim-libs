@@ -5,7 +5,8 @@
 package ch.sbb.matsim.mobsim.qsim.pt;
 
 import java.util.LinkedList;
-import org.matsim.core.api.experimental.events.EventsManager;
+
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.api.experimental.events.VehicleArrivesAtFacilityEvent;
 import org.matsim.core.api.experimental.events.VehicleDepartsAtFacilityEvent;
 import org.matsim.core.mobsim.qsim.InternalInterface;
@@ -21,7 +22,7 @@ import org.matsim.pt.transitSchedule.api.TransitStopFacility;
  */
 public class SBBTransitDriverAgent extends TransitDriverAgentImpl {
 
-    private final EventsManager eventsManager;
+    private final EventsProcessor eventsManager;
     private final SBBPassengerAccessEgress accessEgress;
     private TransitRouteStop currentStop;
     private TransitRouteStop nextStop;
@@ -30,7 +31,7 @@ public class SBBTransitDriverAgent extends TransitDriverAgentImpl {
 
     SBBTransitDriverAgent(Umlauf umlauf, String transportMode, TransitStopAgentTracker agentTracker, InternalInterface internalInterface) {
         super(umlauf, transportMode, agentTracker, internalInterface);
-        this.eventsManager = internalInterface.getMobsim().getEventsManager();
+        this.eventsManager = internalInterface.getMobsim().getEventsProcessor();
         this.accessEgress = new SBBPassengerAccessEgress(internalInterface, agentTracker, internalInterface.getMobsim().getScenario(), this.eventsManager);
         checkCurrentRoute();
     }

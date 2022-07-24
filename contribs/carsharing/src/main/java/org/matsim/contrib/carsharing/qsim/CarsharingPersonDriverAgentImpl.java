@@ -50,7 +50,7 @@ public class CarsharingPersonDriverAgentImpl implements MobsimDriverAgent, Mobsi
 	public CarsharingPersonDriverAgentImpl(final Plan plan, final Netsim simulation, CarsharingManagerInterface carsharingManager, TimeInterpretation timeInterpretation) {
 		this.scenario = simulation.getScenario() ;
 		this.carsharingManager = carsharingManager;
-		this.basicAgentDelegate = new BasicPlanAgentImpl( plan, scenario, simulation.getEventsManager(), simulation.getSimTimer(), timeInterpretation ) ;
+		this.basicAgentDelegate = new BasicPlanAgentImpl( plan, scenario, simulation.getEventsProcessor(), simulation.getSimTimer(), timeInterpretation ) ;
 		this.transitAgentDelegate = new TransitAgentImpl( this.basicAgentDelegate, TransitConfigGroup.BoardingAcceptance.checkLineAndStop) ;
 		this.driverAgentDelegate = new PlanBasedDriverAgentImpl( this.basicAgentDelegate ) ;
 		this.originalPlan = this.scenario.getPopulation().getPersons().get(this.basicAgentDelegate.getId()).getSelectedPlan();

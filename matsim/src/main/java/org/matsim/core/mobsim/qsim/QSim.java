@@ -32,6 +32,7 @@ import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.config.groups.QSimConfigGroup.EndtimeInterpretation;
 import org.matsim.core.events.EventsUtils;
@@ -574,8 +575,11 @@ public final class QSim implements VisMobsim, Netsim, ActivityEndRescheduler {
 	// no real functionality beyond this point
 	// ############################################################################################################################
 
-	@Override
-	public EventsManager getEventsManager() {
+	@Override public EventsProcessor getEventsProcessor() {
+		return events.getEventsProcessor();
+	}
+
+	@Override public EventsManager getEventsManager() {
 		return events;
 	}
 

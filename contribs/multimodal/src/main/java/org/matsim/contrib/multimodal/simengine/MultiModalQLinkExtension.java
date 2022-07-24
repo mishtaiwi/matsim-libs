@@ -81,7 +81,7 @@ class MultiModalQLinkExtension {
 
 		this.addAgent(mobsimAgent, now);
 
-		this.simEngine.getEventsManager().processEvent(new LinkEnterEvent(now, Id.create(mobsimAgent.getId(), Vehicle.class), link.getId()));
+		this.simEngine.getEventsProcessor().processEvent(new LinkEnterEvent(now, Id.create(mobsimAgent.getId(), Vehicle.class ), link.getId()) );
 	}
 
 	private void addAgent(MobsimAgent mobsimAgent, double now) {
@@ -103,11 +103,11 @@ class MultiModalQLinkExtension {
 		this.waitingAfterActivityAgents.add(mobsimAgent);
 		this.activateLink();
 
-		this.simEngine.getEventsManager().processEvent(
-				new PersonEntersVehicleEvent(now, mobsimAgent.getId(), Id.create(mobsimAgent.getId(), Vehicle.class)));
+		this.simEngine.getEventsProcessor().processEvent(
+				new PersonEntersVehicleEvent(now, mobsimAgent.getId(), Id.create(mobsimAgent.getId(), Vehicle.class)) );
 	
-		this.simEngine.getEventsManager().processEvent(
-				new VehicleEntersTrafficEvent(now, mobsimAgent.getId(), link.getId(), Id.create(mobsimAgent.getId(), Vehicle.class), mobsimAgent.getMode(), 1.0));
+		this.simEngine.getEventsProcessor().processEvent(
+				new VehicleEntersTrafficEvent(now, mobsimAgent.getId(), link.getId(), Id.create(mobsimAgent.getId(), Vehicle.class), mobsimAgent.getMode(), 1.0) );
 	}
 
 	boolean moveLink(double now) {
@@ -164,11 +164,11 @@ class MultiModalQLinkExtension {
 				// Christoph, the "isArrivingOnCurrentLink" method is new.  You may decide that this is enough, and getDestinationLinkId
 				// does not need to be queried.  kai, nov'14
 				
-				this.simEngine.getMobsim().getEventsManager().processEvent(
-						new VehicleLeavesTrafficEvent(now, driver.getId(), link.getId(), Id.create(driver.getId(), Vehicle.class), driver.getMode(), 1.0));
+				this.simEngine.getMobsim().getEventsProcessor().processEvent(
+						new VehicleLeavesTrafficEvent(now, driver.getId(), link.getId(), Id.create(driver.getId(), Vehicle.class), driver.getMode(), 1.0) );
 				
-				this.simEngine.getMobsim().getEventsManager().processEvent(
-						new PersonLeavesVehicleEvent(now, driver.getId(), Id.create(driver.getId(), Vehicle.class)));				
+				this.simEngine.getMobsim().getEventsProcessor().processEvent(
+						new PersonLeavesVehicleEvent(now, driver.getId(), Id.create(driver.getId(), Vehicle.class)) );
 				
 				driver.endLegAndComputeNextState(now);
 				this.simEngine.internalInterface.arrangeNextAgentState(driver);
@@ -196,7 +196,7 @@ class MultiModalQLinkExtension {
 	public MobsimAgent getNextWaitingAgent(double now) {
 		MobsimAgent personAgent = waitingToLeaveAgents.poll();
 		if (personAgent != null) {
-			this.simEngine.getEventsManager().processEvent(new LinkLeaveEvent(now, Id.create(personAgent.getId(), Vehicle.class), link.getId()));
+			this.simEngine.getEventsProcessor().processEvent(new LinkLeaveEvent(now, Id.create(personAgent.getId(), Vehicle.class ), link.getId()) );
 		}
 		return personAgent;
 	}
@@ -206,28 +206,28 @@ class MultiModalQLinkExtension {
 
 		for (Tuple<Double, MobsimAgent> tuple : agents) {
 			MobsimAgent mobsimAgent = tuple.getSecond();
-			this.simEngine.getMobsim().getEventsManager().processEvent(
-					new VehicleAbortsEvent(now, Id.create(mobsimAgent.getId(), Vehicle.class), link.getId()));
-			this.simEngine.getMobsim().getEventsManager().processEvent(
-					new PersonStuckEvent(now, mobsimAgent.getId(), link.getId(), mobsimAgent.getMode()));
+			this.simEngine.getMobsim().getEventsProcessor().processEvent(
+					new VehicleAbortsEvent(now, Id.create(mobsimAgent.getId(), Vehicle.class), link.getId()) );
+			this.simEngine.getMobsim().getEventsProcessor().processEvent(
+					new PersonStuckEvent(now, mobsimAgent.getId(), link.getId(), mobsimAgent.getMode()) );
 			this.simEngine.getMobsim().getAgentCounter().incLost();
 			this.simEngine.getMobsim().getAgentCounter().decLiving();
 		}
 		
 		for (MobsimAgent mobsimAgent : this.waitingAfterActivityAgents) {
-			this.simEngine.getMobsim().getEventsManager().processEvent(
-					new VehicleAbortsEvent(now, Id.create(mobsimAgent.getId(), Vehicle.class), link.getId()));
-			this.simEngine.getMobsim().getEventsManager().processEvent(
-					new PersonStuckEvent(now, mobsimAgent.getId(), link.getId(), mobsimAgent.getMode()));
+			this.simEngine.getMobsim().getEventsProcessor().processEvent(
+					new VehicleAbortsEvent(now, Id.create(mobsimAgent.getId(), Vehicle.class), link.getId()) );
+			this.simEngine.getMobsim().getEventsProcessor().processEvent(
+					new PersonStuckEvent(now, mobsimAgent.getId(), link.getId(), mobsimAgent.getMode()) );
 			this.simEngine.getMobsim().getAgentCounter().incLost();
 			this.simEngine.getMobsim().getAgentCounter().decLiving();
 		}
 		
 		for (MobsimAgent mobsimAgent : this.waitingToLeaveAgents) {
-			this.simEngine.getMobsim().getEventsManager().processEvent(
-					new VehicleAbortsEvent(now, Id.create(mobsimAgent.getId(), Vehicle.class), link.getId()));
-			this.simEngine.getMobsim().getEventsManager().processEvent(
-					new PersonStuckEvent(now, mobsimAgent.getId(), link.getId(), mobsimAgent.getMode()));
+			this.simEngine.getMobsim().getEventsProcessor().processEvent(
+					new VehicleAbortsEvent(now, Id.create(mobsimAgent.getId(), Vehicle.class), link.getId()) );
+			this.simEngine.getMobsim().getEventsProcessor().processEvent(
+					new PersonStuckEvent(now, mobsimAgent.getId(), link.getId(), mobsimAgent.getMode()) );
 			this.simEngine.getMobsim().getAgentCounter().incLost();
 			this.simEngine.getMobsim().getAgentCounter().decLiving();
 		}

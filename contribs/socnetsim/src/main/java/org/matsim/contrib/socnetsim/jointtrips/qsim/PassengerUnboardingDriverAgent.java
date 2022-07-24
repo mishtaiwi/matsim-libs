@@ -34,7 +34,7 @@ import org.matsim.contrib.socnetsim.jointtrips.population.DriverRoute;
 import org.matsim.contrib.socnetsim.jointtrips.population.JointActingTypes;
 import org.matsim.contrib.socnetsim.qsim.QVehicleProvider;
 import org.matsim.contrib.socnetsim.utils.IdentifiableCollectionsUtils;
-import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.mobsim.framework.HasPerson;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.framework.MobsimDriverAgent;
@@ -106,7 +106,7 @@ public class PassengerUnboardingDriverAgent implements MobsimDriverAgent, PlanAg
 				}
 			}
 
-			final EventsManager events = ((QSim) internalInterface.getMobsim()).getEventsManager();
+			final EventsProcessor events = ((QSim) internalInterface.getMobsim()).getEventsProcessor();
 			for (PassengerAgent p : passengersToUnboard) {
 				assert p != this;
 				assert !p.getId().equals( getId() );
@@ -137,7 +137,7 @@ public class PassengerUnboardingDriverAgent implements MobsimDriverAgent, PlanAg
 		// It remains however problematic, as it is not clear whether agents will continue
 		// to be given the vehicle or not...
 		final MobsimVehicle vehicle = getVehicle();// vehicleProvider.getVehicle( delegate.getPlannedVehicleId() );
-		final EventsManager events = ((QSim) internalInterface.getMobsim()).getEventsManager();
+		final EventsProcessor events = ((QSim) internalInterface.getMobsim()).getEventsProcessor();
 		for ( PassengerAgent passenger : passengersToBoard ) {
 			assert passenger.getCurrentLinkId().equals( getCurrentLinkId() ) : passenger+" is at "+passenger.getCurrentLinkId()+" instead of "+getCurrentLinkId()+" for driver "+this;
 			assert ((Leg) getCurrentPlanElement()).getMode().equals( JointActingTypes.DRIVER ) : getCurrentPlanElement();

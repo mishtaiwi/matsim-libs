@@ -98,7 +98,7 @@ public class TransitQSimEngine implements  DepartureHandler, MobsimEngine, Agent
 		this.qSim = queueSimulation;
 		this.schedule = queueSimulation.getScenario().getTransitSchedule();
 		this.umlaufBuilder = umlaufBuilder;
-		this.agentTracker = new TransitStopAgentTracker(this.qSim.getEventsManager());
+		this.agentTracker = new TransitStopAgentTracker(this.qSim.getEventsProcessor());
 		this.stopHandlerFactory = stopHandlerFactory;
 	}
 
@@ -119,7 +119,7 @@ public class TransitQSimEngine implements  DepartureHandler, MobsimEngine, Agent
 		for (Entry<Id<TransitStopFacility>, List<PTPassengerAgent>> agentsAtStop : this.agentTracker.getAgentsAtStop().entrySet()) {
 			TransitStopFacility stop = this.schedule.getFacilities().get(agentsAtStop.getKey());
 			for (PTPassengerAgent agent : agentsAtStop.getValue()) {
-				this.qSim.getEventsManager().processEvent(new PersonStuckEvent( now, agent.getId(), stop.getLinkId(), ((MobsimAgent)agent).getMode()));
+				this.qSim.getEventsProcessor().processEvent(new PersonStuckEvent( now, agent.getId(), stop.getLinkId(), ((MobsimAgent)agent).getMode()) );
 				this.qSim.getAgentCounter().decLiving();
 				this.qSim.getAgentCounter().incLost();
 			}

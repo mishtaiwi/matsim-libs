@@ -38,7 +38,7 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.api.core.v01.population.PopulationFactory;
-import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.gbl.Gbl;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.qsim.AgentTracker;
@@ -52,7 +52,6 @@ import org.matsim.core.mobsim.qsim.pt.TransitStopAgentTracker;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.population.routes.GenericRouteImpl;
 import org.matsim.core.population.routes.NetworkRoute;
-import org.matsim.core.router.PlanRouter;
 import org.matsim.core.router.StageActivityTypeIdentifier;
 import org.matsim.core.router.TripRouter;
 import org.matsim.core.router.TripStructureUtils;
@@ -90,7 +89,7 @@ public final class EditTrips {
 	private final InternalInterface internalInterface;
 	private Scenario scenario;
 	private TransitStopAgentTracker transitAgentTracker;
-	private EventsManager eventsManager;
+	private EventsProcessor eventsManager;
 	private final TimeInterpretation timeInterpretation;
 
 	public EditTrips( TripRouter tripRouter, Scenario scenario, InternalInterface internalInterface, TimeInterpretation timeInterpretation ) {
@@ -102,7 +101,7 @@ public final class EditTrips {
 		if (internalInterface == null) {
 			log.warn("InternalInterface is null. Replanning of pt/transit legs will not work properly and will likely fail.");
 		} else {
-			this.eventsManager = internalInterface.getMobsim().getEventsManager();
+			this.eventsManager = internalInterface.getMobsim().getEventsProcessor();
 			for (AgentTracker tracker : (internalInterface.getMobsim().getAgentTrackers())) {
 				if (tracker instanceof TransitStopAgentTracker) {
 					transitAgentTracker = (TransitStopAgentTracker) tracker;

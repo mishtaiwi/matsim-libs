@@ -55,7 +55,7 @@ public class PersonDriverAgentImpl implements MobsimDriverAgent, MobsimPassenger
 	private PlanBasedDriverAgentImpl driverAgentDelegate ;
 
 	public PersonDriverAgentImpl(final Plan plan1, final Netsim simulation, final TimeInterpretation timeInterpretation) {
-		basicAgentDelegate = new BasicPlanAgentImpl(plan1, simulation.getScenario(), simulation.getEventsManager(), 
+		basicAgentDelegate = new BasicPlanAgentImpl(plan1, simulation.getScenario(), simulation.getEventsProcessor(),
 				simulation.getSimTimer(), timeInterpretation ) ;
 		driverAgentDelegate = new PlanBasedDriverAgentImpl(basicAgentDelegate) ;
 		

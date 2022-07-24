@@ -28,6 +28,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.mobsim.framework.HasPerson;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.jdeqsim.JDEQSimConfigGroup;
@@ -54,11 +55,11 @@ class JDEQSimEngine implements MobsimEngine, ActivityHandler {
     private AgentCounter agentCounter;
     private final TimeInterpretation timeInterpretation;
 
-    public JDEQSimEngine(JDEQSimConfigGroup config, Scenario scenario, EventsManager eventsManager, AgentCounter agentCounter, SteppableScheduler scheduler, TimeInterpretation timeInterpretation) {
+    public JDEQSimEngine( JDEQSimConfigGroup config, Scenario scenario, EventsManager eventsProcessor, AgentCounter agentCounter, SteppableScheduler scheduler, TimeInterpretation timeInterpretation ) {
         this.config = config;
         this.scheduler = scheduler;
         this.scenario = scenario;
-        this.eventsManager = eventsManager;
+        this.eventsManager = eventsProcessor;
         this.agentCounter = agentCounter;
         this.timeInterpretation = timeInterpretation;
     }

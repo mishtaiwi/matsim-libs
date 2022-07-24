@@ -29,7 +29,7 @@ import org.matsim.api.core.v01.events.TransitDriverStartsEvent;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.api.experimental.events.VehicleArrivesAtFacilityEvent;
 import org.matsim.core.api.experimental.events.VehicleDepartsAtFacilityEvent;
 import org.matsim.core.mobsim.framework.MobsimAgent;
@@ -51,7 +51,7 @@ public abstract class AbstractTransitDriverAgent implements TransitDriverAgent, 
 
 	private static final Logger log = Logger.getLogger(AbstractTransitDriverAgent.class);
 
-	private EventsManager eventsManager;
+	private EventsProcessor eventsManager;
 
 	private TransitVehicle vehicle = null;
 
@@ -84,7 +84,7 @@ public abstract class AbstractTransitDriverAgent implements TransitDriverAgent, 
 		super();
 		this.internalInterface = internalInterface;
 		Scenario scenario = internalInterface.getMobsim().getScenario();
-		this.eventsManager = internalInterface.getMobsim().getEventsManager();
+		this.eventsManager = internalInterface.getMobsim().getEventsProcessor();
 		accessEgress = new PassengerAccessEgressImpl(this.internalInterface, agentTracker2, scenario, eventsManager);
 	}
 

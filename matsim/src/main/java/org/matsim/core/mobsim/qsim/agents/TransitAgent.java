@@ -60,7 +60,7 @@ public final class TransitAgent implements MobsimDriverPassengerAgent, PlanAgent
 	}
 
 	private TransitAgent(final Person p, final Netsim simulation, TimeInterpretation timeInterpretation) {
-		basicAgentDelegate = new BasicPlanAgentImpl( p.getSelectedPlan(), simulation.getScenario(), simulation.getEventsManager(), 
+		basicAgentDelegate = new BasicPlanAgentImpl( p.getSelectedPlan(), simulation.getScenario(), simulation.getEventsProcessor(),
 				simulation.getSimTimer(), timeInterpretation ) ;
 		driverAgentDelegate = new PlanBasedDriverAgentImpl( basicAgentDelegate ) ;
 		transitAgentDelegate = new TransitAgentImpl( basicAgentDelegate, simulation.getScenario().getConfig().transit().getBoardingAcceptance() );

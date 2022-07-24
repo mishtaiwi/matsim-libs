@@ -30,6 +30,7 @@ import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.mobsim.framework.Mobsim;
 import org.matsim.core.mobsim.jdeqsim.util.Timer;
 import org.matsim.core.utils.timing.TimeInterpretation;
@@ -50,12 +51,12 @@ public class JDEQSimulation implements Mobsim {
 	private final TimeInterpretation timeInterpretation;
 
 	@Inject
-	public JDEQSimulation(final JDEQSimConfigGroup config, final Scenario scenario, final EventsManager events, final TimeInterpretation timeInterpretation) {
+	public JDEQSimulation( final JDEQSimConfigGroup config, final Scenario scenario, final EventsManager eventsProcessor, final TimeInterpretation timeInterpretation ) {
 		Road.setConfig(config);
-		Message.setEventsManager(events);
+		Message.setEventsManager( eventsProcessor );
 		this.config = config;
 		this.scenario = scenario;
-		this.events = events;
+		this.events = eventsProcessor;
 		this.timeInterpretation = timeInterpretation;
 	}
 

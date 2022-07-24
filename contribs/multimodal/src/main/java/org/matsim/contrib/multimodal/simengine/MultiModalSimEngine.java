@@ -27,6 +27,7 @@ import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Node;
 import org.matsim.contrib.multimodal.config.MultiModalConfigGroup;
 import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.mobsim.qsim.InternalInterface;
 import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimEngine;
@@ -72,11 +73,11 @@ class MultiModalSimEngine implements MobsimEngine {
 	}
 
 	QSim getMobsim() {
-		return (QSim) this.internalInterface.getMobsim();
+		return this.internalInterface.getMobsim();
 	}
 
-	/*package*/ EventsManager getEventsManager() {
-        return ((QSim) this.internalInterface.getMobsim()).getEventsManager();
+	/*package*/ EventsProcessor getEventsProcessor() {
+        return this.internalInterface.getMobsim().getEventsProcessor();
 	}
 	
 	@Override
@@ -88,7 +89,7 @@ class MultiModalSimEngine implements MobsimEngine {
 			log.info("\t" + entry.getKey() + "\t" + entry.getValue().getClass().toString());
 		}
 		
-		Scenario scenario = ((QSim) this.internalInterface.getMobsim()).getScenario();
+		Scenario scenario = this.internalInterface.getMobsim().getScenario();
 		MultiModalConfigGroup multiModalConfigGroup = (MultiModalConfigGroup) scenario.getConfig().getModule(MultiModalConfigGroup.GROUP_NAME);
 		Set<String> simulatedModes = CollectionUtils.stringToSet(multiModalConfigGroup.getSimulatedModes());
 		
@@ -261,11 +262,11 @@ class MultiModalSimEngine implements MobsimEngine {
 	private void assignSimEngines() {
 
 		// only for statistics
-		int nodes[] = new int[this.runners.length];
-		int links[] = new int[this.runners.length];
+		int[] nodes = new int[this.runners.length];
+		int[] links = new int[this.runners.length];
 		
 		int roundRobin = 0;
-		Scenario scenario = ((QSim) this.internalInterface.getMobsim()).getScenario();
+		Scenario scenario = this.internalInterface.getMobsim().getScenario();
 		
 		for (Node node : scenario.getNetwork().getNodes().values()) {
 			MultiModalQNodeExtension multiModalQNodeExtension = this.getMultiModalQNodeExtension(node.getId());

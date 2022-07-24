@@ -32,7 +32,7 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.api.core.v01.population.Route;
-import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.api.experimental.events.EventsProcessor;
 import org.matsim.core.gbl.Gbl;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.qsim.InternalInterface;
@@ -54,7 +54,7 @@ import org.matsim.vehicles.Vehicle;
  */
 public class TransitDriverAgentImpl extends AbstractTransitDriverAgent {
 
-	private final EventsManager eventsManager;
+	private final EventsProcessor eventsManager;
 
 	private static class PlanBuilder {
 
@@ -100,7 +100,7 @@ public class TransitDriverAgentImpl extends AbstractTransitDriverAgent {
 			TransitStopAgentTracker thisAgentTracker, InternalInterface internalInterface) {
 		super(internalInterface, thisAgentTracker);
 		this.umlauf = umlauf;
-		this.eventsManager = internalInterface.getMobsim().getEventsManager();
+		this.eventsManager = internalInterface.getMobsim().getEventsProcessor();
 		this.scenario = internalInterface.getMobsim().getScenario() ;
 		// (yy AbstractTransitDriverAgent already keeps both of them. kai, dec'15)
 		this.iUmlaufStueck = this.umlauf.getUmlaufStuecke().iterator();

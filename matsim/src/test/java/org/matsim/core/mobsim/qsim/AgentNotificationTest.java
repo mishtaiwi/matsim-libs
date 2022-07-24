@@ -196,7 +196,7 @@ public class AgentNotificationTest {
 			}
 
 			private void onTenMinutesAfterDeparting() {
-				simulation.getEventsManager().processEvent(new HomesicknessEvent());
+				simulation.getEventsProcessor().processEvent(new HomesicknessEvent() );
 			}
 
 			@Override
