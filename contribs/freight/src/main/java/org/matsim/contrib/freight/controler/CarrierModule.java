@@ -128,7 +128,9 @@ public final class CarrierModule extends AbstractModule {
 				@Override public void finish(){
 				}
 				@Override public double getScore(){
-					return Double.NEGATIVE_INFINITY;
+					return carrier.getSelectedPlan().getScore(); //2nd Quickfix: Keep the current score -> which ist normally the score from jsprit. -> Better safe JspritScore as own value.
+//					return Double.MIN_VALUE; // 1st Quickfix, to have a "double" value for xsd (instead of neg.-Infinity).
+//					return Double.NEGATIVE_INFINITY; // Default from KN -> causes errors with reading in carrierFile because Java writes "Infinity", while XSD needs "INF"
 				}
 				@Override public void handleEvent( Event event ){
 				}
