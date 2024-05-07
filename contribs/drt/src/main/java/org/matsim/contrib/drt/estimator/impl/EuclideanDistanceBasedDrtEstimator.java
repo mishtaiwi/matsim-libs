@@ -59,6 +59,11 @@ public class EuclideanDistanceBasedDrtEstimator implements DrtEstimator {
 	public Estimate estimate(DrtRoute route, OptionalTime departureTime) {
 		Coord fromCoord = network.getLinks().get(route.getStartLinkId()).getToNode().getCoord();
 		Coord toCoord = network.getLinks().get(route.getEndLinkId()).getToNode().getCoord();
+
+		return estimate(fromCoord, toCoord, departureTime);
+	}
+
+	public Estimate estimate(Coord fromCoord, Coord toCoord , OptionalTime departureTime) {
 		double euclideanDistance = CoordUtils.calcEuclideanDistance(fromCoord, toCoord);
 		double typicalRideDuration = euclideanDistance * slope + intercept;
 		double typicalRideDistance = networkDistanceFactor * euclideanDistance;

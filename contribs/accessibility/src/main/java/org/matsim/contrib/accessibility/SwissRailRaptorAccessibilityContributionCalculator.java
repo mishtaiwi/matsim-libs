@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author dziemke
  */
 class SwissRailRaptorAccessibilityContributionCalculator implements AccessibilityContributionCalculator {
-	private static final Logger LOG = LogManager.getLogger( SwissRailRaptorAccessibilityContributionCalculator.class );
+	private static final Logger LOG = LogManager.getLogger( EstimatedDrtAccessibilityContributionCalculator.class );
 	private SwissRailRaptor raptor;
 	private String mode;
 	private ScoringConfigGroup scoringConfigGroup;
