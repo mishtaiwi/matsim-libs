@@ -25,11 +25,11 @@ public final class DetourBasedDrtEstimator implements DrtEstimator {
 
 	@Override
 	public Estimate estimate(DrtRoute route, OptionalTime departureTime) {
-		double directRideTIme = route.getDirectRideTime();
+		double directRideTime = route.getDirectRideTime();
 		double directDistance = route.getDistance();
 		double waitTime = distributionGenerator.generateWaitTime();
-		double rideTime = distributionGenerator.generateRideTime(directRideTIme);
-		double rideDistance = distributionGenerator.generateRideDistance(rideTime, directRideTIme, directDistance);
+		double rideTime = distributionGenerator.generateRideTime(directRideTime);
+		double rideDistance = distributionGenerator.generateRideDistance(rideTime, directRideTime, directDistance);
 		double acceptanceRate = distributionGenerator.generateAcceptanceRate();
 
 		return new Estimate(rideDistance, waitTime + rideTime, waitTime, acceptanceRate);
