@@ -12,7 +12,6 @@ import org.matsim.api.core.v01.network.Node;
 import org.matsim.contrib.accessibility.utils.*;
 import org.matsim.contrib.drt.estimator.DrtEstimator;
 import org.matsim.contrib.drt.estimator.impl.EuclideanDistanceBasedDrtEstimator;
-import org.matsim.contrib.roadpricing.RoadPricingScheme;
 import org.matsim.core.config.groups.NetworkConfigGroup;
 import org.matsim.core.config.groups.ScoringConfigGroup;
 import org.matsim.core.gbl.Gbl;
@@ -24,7 +23,6 @@ import org.matsim.core.router.util.TravelTime;
 import org.matsim.core.utils.misc.OptionalTime;
 import org.matsim.facilities.ActivityFacilities;
 import org.matsim.facilities.ActivityFacility;
-import org.matsim.utils.leastcostpathtree.LeastCostPathTree;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,7 +54,6 @@ final class EstimatedDrtAccessibilityContributionCalculator implements Accessibi
 	private final double walkSpeed_m_s;
 
 	private Node fromNode = null;
-	private final LeastCostPathTree lcpt;
 
 	private Map<Id<? extends BasicLocation>, ArrayList<ActivityFacility>> aggregatedMeasurePoints;
 	private Map<Id<? extends BasicLocation>, AggregationObject> aggregatedOpportunities;
@@ -75,16 +72,15 @@ final class EstimatedDrtAccessibilityContributionCalculator implements Accessibi
 		this.travelDisutility = travelDisutilityFactory.createTravelDisutility(travelTime);
 
 
-		this.lcpt = new LeastCostPathTree(travelTime, travelDisutility);
 
-		// TODO: should the marginal utility of traveling for drt be same as for car?
 		betaWalkTT = scoringConfigGroup.getModes().get(TransportMode.walk).getMarginalUtilityOfTraveling() - scoringConfigGroup.getPerforming_utils_hr();
-		betaDrtTT = scoringConfigGroup.getModes().get(TransportMode.car).getMarginalUtilityOfTraveling() - scoringConfigGroup.getPerforming_utils_hr();
+		betaDrtTT = scoringConfigGroup.getModes().get(TransportMode.drt).getMarginalUtilityOfTraveling() - scoringConfigGroup.getPerforming_utils_hr();
 
 		this.walkSpeed_m_s = scenario.getConfig().routing().getTeleportedModeSpeeds().get(TransportMode.walk);
 
 		//TODO: realistic parameters?
-		this.drtEstimator = new EuclideanDistanceBasedDrtEstimator(scenario.getNetwork(), 1.2, 1.0, 0, 5 * 3600, 0, 1, 0);
+		this.drtEstimator = new EuclideanDistanceBasedDrtEstimator(scenario.getNetwork(), 1.2, 0.0842928, 337.1288522,  5 * 60, 0, 0, 0);
+//		this.drtEstimator = DetourBasedDrtEstimator.normalDistributed(337.1288522, 0.0842928, 0., 0. * 60, 0);
 
 	}
 
@@ -113,7 +109,7 @@ final class EstimatedDrtAccessibilityContributionCalculator implements Accessibi
 	@Override
 	public void notifyNewOriginNode(Id<? extends BasicLocation> fromNodeId, Double departureTime) {
 		this.fromNode = subNetwork.getNodes().get(fromNodeId);
-		this.lcpt.calculate(subNetwork, fromNode, departureTime);
+//		this.lcpt.calculate(subNetwork, fromNode, departureTime);
 
 	}
 
@@ -133,7 +129,7 @@ final class EstimatedDrtAccessibilityContributionCalculator implements Accessibi
 		double congestedCarUtilityRoad2Node = -travelDisutility.getLinkTravelDisutility(nearestLink, departureTime, null, null) * distanceFraction;
 
 		// Combine all utility components (using the identity: exp(a+b) = exp(a) * exp(b))
-		double modeSpecificConstant = AccessibilityUtils.getModeSpecificConstantForAccessibilities(TransportMode.car, scoringConfigGroup); // TODO: update from car to drt
+		double modeSpecificConstant = AccessibilityUtils.getModeSpecificConstantForAccessibilities(TransportMode.drt, scoringConfigGroup); // TODO: update from car to drt
 
 		for (final AggregationObject destination : aggregatedOpportunities.values()) {
 
@@ -146,8 +142,10 @@ final class EstimatedDrtAccessibilityContributionCalculator implements Accessibi
 			// Pre-computed effect of all opportunities reachable from destination network node
 			double sumExpVjkWalk = destination.getSum();
 
-			expSum += Math.exp(this.scoringConfigGroup.getBrainExpBeta() * (walkUtilityMeasuringPoint2Road + modeSpecificConstant
-				+ congestedCarUtilityRoad2Node + utilityDrt)) * sumExpVjkWalk;
+			expSum += Math.exp(this.scoringConfigGroup.getBrainExpBeta() *
+				(walkUtilityMeasuringPoint2Road + modeSpecificConstant
+				+ congestedCarUtilityRoad2Node + utilityDrt))
+				* sumExpVjkWalk;
 		}
 		return expSum;
 	}
