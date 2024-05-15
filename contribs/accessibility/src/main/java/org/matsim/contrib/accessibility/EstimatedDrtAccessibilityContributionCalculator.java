@@ -1,5 +1,6 @@
 package org.matsim.contrib.accessibility;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.BasicLocation;
@@ -12,22 +13,26 @@ import org.matsim.api.core.v01.network.Node;
 import org.matsim.contrib.accessibility.utils.*;
 import org.matsim.contrib.drt.estimator.DrtEstimator;
 import org.matsim.contrib.drt.estimator.impl.EuclideanDistanceBasedDrtEstimator;
+import org.matsim.contrib.drt.routing.DrtRoute;
+import org.matsim.contrib.drt.routing.DrtStopFacility;
+import org.matsim.contrib.drt.routing.DrtStopFacilityImpl;
+import org.matsim.contrib.dvrp.path.VrpPaths;
+import org.matsim.contrib.dvrp.router.ClosestAccessEgressFacilityFinder;
 import org.matsim.core.config.groups.NetworkConfigGroup;
 import org.matsim.core.config.groups.ScoringConfigGroup;
 import org.matsim.core.gbl.Gbl;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.router.costcalculators.TravelDisutilityFactory;
+import org.matsim.core.router.speedy.SpeedyALTFactory;
+import org.matsim.core.router.util.LeastCostPathCalculator;
 import org.matsim.core.router.util.TravelDisutility;
 import org.matsim.core.router.util.TravelTime;
 import org.matsim.core.utils.misc.OptionalTime;
 import org.matsim.facilities.ActivityFacilities;
 import org.matsim.facilities.ActivityFacility;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author thibautd, dziemke
@@ -58,6 +63,7 @@ final class EstimatedDrtAccessibilityContributionCalculator implements Accessibi
 	private Map<Id<? extends BasicLocation>, ArrayList<ActivityFacility>> aggregatedMeasurePoints;
 	private Map<Id<? extends BasicLocation>, AggregationObject> aggregatedOpportunities;
 
+	private final LeastCostPathCalculator router;
 
 
 	public EstimatedDrtAccessibilityContributionCalculator(String mode, final TravelTime travelTime, final TravelDisutilityFactory travelDisutilityFactory, Scenario scenario) {
@@ -70,6 +76,7 @@ final class EstimatedDrtAccessibilityContributionCalculator implements Accessibi
 
 		Gbl.assertNotNull(travelDisutilityFactory);
 		this.travelDisutility = travelDisutilityFactory.createTravelDisutility(travelTime);
+		this.router = new SpeedyALTFactory().createPathCalculator(scenario.getNetwork(), travelDisutility, travelTime);
 
 
 
@@ -81,6 +88,8 @@ final class EstimatedDrtAccessibilityContributionCalculator implements Accessibi
 		//TODO: realistic parameters?
 		this.drtEstimator = new EuclideanDistanceBasedDrtEstimator(scenario.getNetwork(), 1.2, 0.0842928, 337.1288522,  5 * 60, 0, 0, 0);
 //		this.drtEstimator = DetourBasedDrtEstimator.normalDistributed(337.1288522, 0.0842928, 0., 0. * 60, 0);
+
+
 
 	}
 
@@ -119,6 +128,18 @@ final class EstimatedDrtAccessibilityContributionCalculator implements Accessibi
 												   Map<Id<? extends BasicLocation>, AggregationObject> aggregatedOpportunities, Double departureTime) {
 		double expSum = 0.;
 
+
+		// Access
+//		new ClosestAccessEgressFacilityFinder(2000, scenario.getNetwork(), facilityQuadTree);
+
+		// DRT Trip
+
+
+		// Egress
+
+
+
+		// Old Approach: nearest link...
 		Link nearestLink = NetworkUtils.getNearestLinkExactly(subNetwork, origin.getCoord());
 		Distances distance = NetworkUtil.getDistances2NodeViaGivenLink(origin.getCoord(), nearestLink, fromNode);
 		double walkTravelTimeMeasuringPoint2Road_h = distance.getDistancePoint2Intersection() / (this.walkSpeed_m_s * 3600);
@@ -134,9 +155,29 @@ final class EstimatedDrtAccessibilityContributionCalculator implements Accessibi
 		for (final AggregationObject destination : aggregatedOpportunities.values()) {
 
 			// utility during DRT ride
-			DrtEstimator.Estimate estimate = drtEstimator.estimate(origin.getCoord(), destination.getNearestBasicLocation().getCoord(), OptionalTime.defined(departureTime));
+//			DrtEstimator.Estimate estimate = drtEstimator.estimate(origin.getCoord(), destination.getNearestBasicLocation().getCoord(), OptionalTime.defined(departureTime));
 
-			double totalTime = (estimate.waitingTime() + estimate.rideTime()) / 3600;
+//			DrtRoute route = new DrtRoute(Id.createLinkId("xxx"), Id.createLinkId("yyy"));
+
+			Node destinationNode = (Node) destination.getNearestBasicLocation();
+//			double directRideTime = VrpPaths.calcAndCreatePath(nearestLink, toLink, departureTime, router, travelTime).getTravelTime();
+
+//			LeastCostPathCalculator.Path vrpPath = router.calcLeastCostPath(nearestLink.getToNode(), toLink.getFromNode(), departureTime, null, null);
+			LeastCostPathCalculator.Path vrpPath = router.calcLeastCostPath(nearestLink.getToNode(), destinationNode, departureTime, null, null);
+
+			List<Link> links = vrpPath.links;
+//			links.add(toLink); TODO: do we need this?
+			double directRideDistance = links.stream().mapToDouble(Link::getLength).sum();
+
+//			route.setDirectRideTime(directRideTime);
+//			route.setDistance(directRideDistance);
+//			route.setStartLinkId(nearestLink.getId());
+//			route.setEndLinkId(toLink.getId());
+//			DrtEstimator.Estimate estimate = drtEstimator.estimate(route, OptionalTime.defined(departureTime));
+
+			double waitTime = 103.34;
+			double rideTime = 47.84 + 0.1087 * directRideDistance;
+			double totalTime = (waitTime + rideTime) / 3600;
 			double utilityDrt = betaDrtTT * totalTime;
 
 			// Pre-computed effect of all opportunities reachable from destination network node
