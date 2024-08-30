@@ -22,9 +22,10 @@
 package org.matsim.freight.carriers.controler;
 
 import org.matsim.core.scoring.ScoringFunction;
+import org.matsim.core.scoring.ScoringFunctionFactory;
 import org.matsim.freight.carriers.Carrier;
 
-public interface CarrierScoringFunctionFactory {
+public interface CarrierScoringFunctionFactory{
 
 	ScoringFunction createScoringFunction(Carrier carrier);
 
